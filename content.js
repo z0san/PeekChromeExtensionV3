@@ -22,7 +22,7 @@ window.onload=function(){
   popup = document.getElementById('PeekPopUp');
   popup.width = width;
   popup.height = height;
-  popup.src = "https://google.com";
+  popup.style.visibility = "hidden";
   console.log('adding popup html');
 }
 
@@ -41,7 +41,7 @@ window.onmouseover=function(e) {
   if(currentItem.tagName == 'a' || currentItem.tagName == 'A' &&
     currentItem.href != currentUrl){
     currentUrl = currentItem.href;
-    //call the update function incase action needs to be taken
+    //call the update function to update popup info
     urlUpdate();
   }
 
@@ -50,9 +50,10 @@ window.onmouseover=function(e) {
 //function to get url if needed and is called whenever it is possible that a new url should be downloaded
 function urlUpdate() {
   if(currentUrl && currentKeyCode == triggerKeyCode && keyDown){
-    popup.style.visibility = "visable";
+    popup.style.visibility = "visible";
+    popup.src = currentUrl;
     console.log('starting popup window');
- }
+ } //else console.log('current keypress: ' + currentKeyCode);
 }
 
 
@@ -60,13 +61,10 @@ document.onkeydown = function(evt) {
   evt = evt || window.event;
   var key = evt.keyCode || evt.which;
   //only want to continue if there is something to update
-  if(!keyDown || currentKeyCode == key){
-    currentKeyCode = key;
-    keyDown = true;
-    popup.style.visibility = "visible";
-    //call the update function incase action needs to be taken
-    urlUpdate();
-  }
+ currentKeyCode = key;
+ keyDown = true;
+ //call the update function to update popup info
+ urlUpdate();
 };
 
 //when key up set keyDown to false so the extension will no longer run

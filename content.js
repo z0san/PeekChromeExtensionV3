@@ -10,10 +10,19 @@ var keyDown = false;
 //to 17 (ctrl) for testing but in future should be able to be changed in settings
 //by the user
 var triggerKeyCode = 17
+//stores the width and height of the peek window
+var width = 300;
+var height = width * (9/16);
+//sores the popup elemet
+var popup;
 
 //add the html popup window to the page on load
 window.onload=function(){
   document.getElementsByTagName('html')[0].innerHTML += popuphtml;
+  popup = document.getElementById('PeekPopUp');
+  popup.width = width;
+  popup.height = height;
+  popup.src = "https://google.com";
   console.log('adding popup html');
 }
 
@@ -41,6 +50,7 @@ window.onmouseover=function(e) {
 //function to get url if needed and is called whenever it is possible that a new url should be downloaded
 function urlUpdate() {
   if(currentUrl && currentKeyCode == triggerKeyCode && keyDown){
+    popup.style.visibility = "visable";
     console.log('starting popup window');
  }
 }
@@ -50,9 +60,10 @@ document.onkeydown = function(evt) {
   evt = evt || window.event;
   var key = evt.keyCode || evt.which;
   //only want to continue if there is something to update
-  if(!keyDown || currentKeyCode != key){
+  if(!keyDown || currentKeyCode == key){
     currentKeyCode = key;
     keyDown = true;
+    popup.style.visibility = "visible";
     //call the update function incase action needs to be taken
     urlUpdate();
   }
@@ -61,20 +72,20 @@ document.onkeydown = function(evt) {
 //when key up set keyDown to false so the extension will no longer run
 document.onkeyup = function(evt) {
   keyDown = false;
+  popup.style.visibility = "hidden";
   console.log('closing popup window');
 };
 
 
 //event listener to move the popup to the mouse
 document.addEventListener('mousemove', function(e) {
-  let body = document.querySelector('body');
-  let popup = document.getElementById('PeekPopUp');
-  let left = e.offsetX;
-  let top = e.offsetY;
+  let body = document.querySelector('html');
+  let left = e.pageX + (width/2) + 5;
+  let top = e.pageY + (height/2) + 5;
   popup.style.left = left + 'px';
   popup.style.top = top + 'px';
 });
 
 
 
-var popuphtml = "<div id=PeekPopUp style='position:absolute; transform:translate(-50%, -50%);'>test</div>";
+var popuphtml = "<iframe id=PeekPopUp style='position:absolute; transform:translate(-50%, -50%);'>test</iframe>";
